@@ -141,11 +141,11 @@ class PMKID extends Module
 
     private function convertCapture()
     {
-      if (file_exists("/pineapple/modules/PMKID/capture/{$this->request->capture}.pcapng")) {
-        $this->response = array("download" => $this->downloadFile("/pineapple/modules/PMKID/capture/{$this->request->capture}.pcapng"));
+      if (file_exists("/pineapple/modules/PMKID/capture/{$this->request->capture}.16800")) {
+        $this->response = array("download" => $this->downloadFile("/pineapple/modules/PMKID/capture/{$this->request->capture}.16800"));
       } else if (file_exists("/pineapple/modules/PMKID/capture/{$this->request->capture}")) {
-        exec("hcxpcaptool -z /pineapple/modules/PMKID/capture/{$this->request->capture}.pcapng /pineapple/modules/PMKID/capture/{$this->request->capture}");
-        $this->response = array("download" => $this->downloadFile("/pineapple/modules/PMKID/capture/{$this->request->capture}.pcapng"));
+        exec("hcxpcaptool -z /pineapple/modules/PMKID/capture/{$this->request->capture}.16800 /pineapple/modules/PMKID/capture/{$this->request->capture}");
+        $this->response = array("download" => $this->downloadFile("/pineapple/modules/PMKID/capture/{$this->request->capture}.16800"));
       }
     }
 
