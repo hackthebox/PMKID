@@ -1,0 +1,10 @@
+{
+    "author": "g0blin",
+    "description": "g0blin",
+    "devices": [
+        "nano",
+        "tetra"
+    ],
+    "title": "PMKID",
+    "version": "0.1"
+}
