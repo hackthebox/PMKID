@@ -1,5 +1,5 @@
 #!/bin/sh
-#2015 - Whistle Master
+#2015 - g0blin & Zylla
 
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/sd/lib:/sd/usr/lib
 export PATH=$PATH:/sd/usr/bin:/sd/usr/sbin
@@ -50,9 +50,7 @@ if [ "$1" = "start" ]; then
 
 	echo -e "Monitor : ${MYMONITOR}" >> ${LOG}
 
-  if [ ! -d /pineapple/modules/PMKID/capture ]; then
-    mkdir /pineapple/modules/PMKID/capture
-  fi
+  mkdir -p /pineapple/modules/PMKID/capture
 
   echo $MYTIME > ${LOCK}
 
