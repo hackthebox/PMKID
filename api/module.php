@@ -197,7 +197,7 @@ class PMKID extends Module
 
     private function getAPs()
     {
-        exec("/pineapple/modules/PMKID/scripts/scan.sh {$this->request->interface} {$this->request->duration}");
+        if (!$this->request->skipScan) exec("/pineapple/modules/PMKID/scripts/scan.sh {$this->request->interface} {$this->request->duration}");
         $result = file_get_contents("/tmp/pmkid-aps");
         $apList = array_map(function ($line) {
           $lineExploded = explode(',', $line);

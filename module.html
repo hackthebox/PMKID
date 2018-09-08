@@ -76,7 +76,7 @@
           <input type="text" class="form-control input-sm" ng-disabled="captureStarting || captureStopping || capturing" ng-model="commandLineArguments"/>
 
           <span class="input-group-btn">
-            <button class="btn btn-{{scanLabel}} btn-sm" ng-disabled="scanning" ng-click="getAPs()">{{ scanText }}</button>
+            <button class="btn btn-{{scanLabel}} btn-sm" ng-disabled="scanning || captureStarting || captureStopping || capturing" ng-click="getAPs()">{{ scanText }}</button>
             <button class="btn btn-{{captureLabel}} btn-sm" ng-disabled="captureStarting || captureStopping || !aps.length" ng-click="toggleCapture()">{{ captureText }}</button>
           </span>
         </div>

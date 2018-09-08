@@ -207,7 +207,7 @@ registerController('PMKID_ScanController', ['$api', '$scope', '$rootScope', '$ti
     });
   });
 
-  $scope.getAPs = (function() {
+  $scope.getAPs = (function(skipScan) {
     $scope.scanning = true;
     $scope.scanLabel = 'warning';
     $scope.scanText = 'Scanning';
@@ -215,10 +215,11 @@ registerController('PMKID_ScanController', ['$api', '$scope', '$rootScope', '$ti
       module: 'PMKID',
       action: 'getAPs',
       interface: $scope.selectedInterface,
-      duration: $scope.duration
+      duration: $scope.duration,
+      skipScan
     }, function(response) {
       $scope.aps = response.aps;
-      $scope.captureLabel = 'success';
+      if (!skipScan) $scope.captureLabel = 'success';
       $scope.scanning = false;
       $scope.scanLabel = 'success';
       $scope.scanText = 'Scan for APs';
@@ -231,6 +232,8 @@ registerController('PMKID_ScanController', ['$api', '$scope', '$rootScope', '$ti
 
   $scope.getInterfaces();
   $scope.getScanStatus();
+  $scope.refreshOutput();
+  $scope.getAPs(true);
   $interval(function() {
     $scope.refreshOutput();
   }, 2000);
