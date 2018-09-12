@@ -1,10 +1,10 @@
 {
     "author": "g0blin",
-    "description": "g0blin",
+    "description": "Provides a UI for performing the PMKID attack against wireless networks / clients.",
     "devices": [
         "nano",
         "tetra"
     ],
     "title": "PMKID",
-    "version": "0.1"
+    "version": "0.2"
 }
