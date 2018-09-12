@@ -112,12 +112,14 @@ registerController('PMKID_ScanController', ['$api', '$scope', '$rootScope', '$ti
     $scope.captureLabel = "warning";
     $scope.captureText = "Starting...";
     $scope.captureStarting = true;
+    var selectedAps = $("#apList input:checked").map((index, input) => { return $(input).val() }).toArray();
 
     $api.request({
       module: 'PMKID',
       action: 'startCapture',
       interface: $scope.selectedInterface,
-      commandLineArguments: $scope.commandLineArguments
+      commandLineArguments: $scope.commandLineArguments,
+      selectedAps
     }, function(response) {
       $scope.captureLabel = "danger";
       $scope.captureText = "Stop Capture";
@@ -192,6 +194,8 @@ registerController('PMKID_ScanController', ['$api', '$scope', '$rootScope', '$ti
       module: 'PMKID',
       action: 'loadCapture',
       capture: $scope.selectedCapture
+    }, function () {
+      $scope.getAPs(true);
     })
   });
 
@@ -219,7 +223,7 @@ registerController('PMKID_ScanController', ['$api', '$scope', '$rootScope', '$ti
       skipScan
     }, function(response) {
       $scope.aps = response.aps;
-      if (!skipScan) $scope.captureLabel = 'success';
+      if ($scope.aps.length) $scope.captureLabel = 'success';
       $scope.scanning = false;
       $scope.scanLabel = 'success';
       $scope.scanText = 'Scan for APs';

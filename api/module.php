@@ -140,6 +140,11 @@ class PMKID extends Module
       if (file_exists("/pineapple/modules/PMKID/capture/{$this->request->capture}")) {
         exec("cp /pineapple/modules/PMKID/capture/{$this->request->capture}  /tmp/pmkid.log");
       }
+      $apFilename = str_replace(".log", ".aps", $this->request->capture);
+      $this->response = $apFilename;
+      if (file_exists("/pineapple/modules/PMKID/capture/${apFilename}")) {
+        exec("cp /pineapple/modules/PMKID/capture/${apFilename} /tmp/pmkid-aps");
+      }
     }
 
     private function convertCapture()
@@ -210,6 +215,11 @@ class PMKID extends Module
 
     private function startCapture()
     {
+        if (isset($this->request->selectedAps)) {
+          $fp = fopen("/tmp/pmkid-selectedAps", "w");
+          fwrite($fp, implode("\n", $this->request->selectedAps));
+          fclose($fp);
+        }
         exec("/pineapple/modules/PMKID/scripts/capture.sh start {$this->request->interface} {$this->request->commandLineArguments}");
     }
 

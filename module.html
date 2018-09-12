@@ -107,8 +107,8 @@
           <th>POWNED</th>
       </thead>
       <tbody>
-        <tr ng-repeat="ap in aps" style="background:{{ pmkids.includes(ap.bssid.split(':').join('').toLowerCase()) ? '#5cb85c' : '' }}">
-          <td><input type="checkbox" id="blahA" value="1"/></td>
+        <tr ng-repeat="ap in aps" id="apList" style="background:{{ pmkids.includes(ap.bssid.split(':').join('').toLowerCase()) ? '#5cb85c' : '' }}">
+          <td><input type="checkbox" value="{{ap.bssid.split(':').join('').toLowerCase()}}"/></td>
           <td>{{ ap.bssid }}</td>
           <td>{{ ap.essid }}</td>
           <td>{{ pmkids.includes(ap.bssid.split(':').join('').toLowerCase()) ? '&#10004;' : '&#10008;' }}</td>
