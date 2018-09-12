@@ -76,7 +76,8 @@
           <input type="text" class="form-control input-sm" ng-disabled="captureStarting || captureStopping || capturing" ng-model="commandLineArguments"/>
 
           <span class="input-group-btn">
-            <button class="btn btn-{{captureLabel}} btn-sm" ng-disabled="captureStarting || captureStopping" ng-click="toggleCapture()">{{ captureText }}</button>
+            <button class="btn btn-{{scanLabel}} btn-sm" ng-disabled="scanning || captureStarting || captureStopping || capturing" ng-click="getAPs()">{{ scanText }}</button>
+            <button class="btn btn-{{captureLabel}} btn-sm" ng-disabled="captureStarting || captureStopping || !aps.length" ng-click="toggleCapture()">{{ captureText }}</button>
           </span>
         </div>
       </div>
@@ -100,15 +101,17 @@
     <table class="table">
       <thead>
         <tr>
+          <th>Include</th>
           <th>MAC</th>
           <th>BSSID</th>
           <th>POWNED</th>
       </thead>
       <tbody>
-        <tr ng-repeat="(mac, ap) in data.accessPoints" style="background:{{ ap.powned ? '#5cb85c' : '' }}">
-          <td>{{ mac }}</td>
+        <tr ng-repeat="ap in aps" id="apList" style="background:{{ pmkids.includes(ap.bssid.split(':').join('').toLowerCase()) ? '#5cb85c' : '' }}">
+          <td><input type="checkbox" value="{{ap.bssid.split(':').join('').toLowerCase()}}"/></td>
           <td>{{ ap.bssid }}</td>
-          <td>{{ ap.powned ? '&#10004;' : '&#10008;' }}</td>
+          <td>{{ ap.essid }}</td>
+          <td>{{ pmkids.includes(ap.bssid.split(':').join('').toLowerCase()) ? '&#10004;' : '&#10008;' }}</td>
         </tr>
       </tbody>
     </table>

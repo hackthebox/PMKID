@@ -79,8 +79,11 @@ registerController('PMKID_ScanController', ['$api', '$scope', '$rootScope', '$ti
   $scope.refreshLabelOFF = "danger";
 
   $scope.interfaces = [];
+  $scope.aps = [];
+  $scope.pmkids = [];
   $scope.captures = [];
   $scope.commandLineArguments = '--enable_status 3';
+  $scope.duration = 30;
 
   $scope.getInterfaces = (function() {
     $api.request({
@@ -92,10 +95,13 @@ registerController('PMKID_ScanController', ['$api', '$scope', '$rootScope', '$ti
     });
   });
 
-  $scope.captureLabel = "success";
+  $scope.captureLabel = "warning";
   $scope.captureText = "Start Capture";
+  $scope.scanLabel = "success";
+  $scope.scanText = "Scan for APs";
   $scope.captureStarting = false;
   $scope.captureStopping = false;
+  $scope.scanning = false;
   $scope.capturing = false;
 
   $scope.toggleCapture = (function() {
@@ -106,12 +112,14 @@ registerController('PMKID_ScanController', ['$api', '$scope', '$rootScope', '$ti
     $scope.captureLabel = "warning";
     $scope.captureText = "Starting...";
     $scope.captureStarting = true;
+    var selectedAps = $("#apList input:checked").map((index, input) => { return $(input).val() }).toArray();
 
     $api.request({
       module: 'PMKID',
       action: 'startCapture',
       interface: $scope.selectedInterface,
-      commandLineArguments: $scope.commandLineArguments
+      commandLineArguments: $scope.commandLineArguments,
+      selectedAps
     }, function(response) {
       $scope.captureLabel = "danger";
       $scope.captureText = "Stop Capture";
@@ -145,13 +153,7 @@ registerController('PMKID_ScanController', ['$api', '$scope', '$rootScope', '$ti
       filter: $scope.filter
     }, function(response) {
       $scope.output = response;
-      try {
-        $scope.data = JSON.parse(response);
-      } catch (err) {};
-
-      $timeout(function() {
-        $scope.refreshOutput();
-      }, 2000);
+      $scope.pmkids = response.pmkids;
     })
   });
 
@@ -192,6 +194,8 @@ registerController('PMKID_ScanController', ['$api', '$scope', '$rootScope', '$ti
       module: 'PMKID',
       action: 'loadCapture',
       capture: $scope.selectedCapture
+    }, function () {
+      $scope.getAPs(true);
     })
   });
 
@@ -207,14 +211,34 @@ registerController('PMKID_ScanController', ['$api', '$scope', '$rootScope', '$ti
     });
   });
 
+  $scope.getAPs = (function(skipScan) {
+    $scope.scanning = true;
+    $scope.scanLabel = 'warning';
+    $scope.scanText = 'Scanning';
+    $api.request({
+      module: 'PMKID',
+      action: 'getAPs',
+      interface: $scope.selectedInterface,
+      duration: $scope.duration,
+      skipScan
+    }, function(response) {
+      $scope.aps = response.aps;
+      if ($scope.aps.length) $scope.captureLabel = 'success';
+      $scope.scanning = false;
+      $scope.scanLabel = 'success';
+      $scope.scanText = 'Scan for APs';
+    })
+  });
+
   $scope.output = 'Loading...';
-  $scope.data = {
-    "accessPoints": [],
-    "pmkids": []
-  };
+  $scope.pmkids = [];
 
   $scope.getInterfaces();
   $scope.getScanStatus();
   $scope.refreshOutput();
+  $scope.getAPs(true);
+  $interval(function() {
+    $scope.refreshOutput();
+  }, 2000);
   $scope.getCaptures();
 }]);

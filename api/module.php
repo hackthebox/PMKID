@@ -24,6 +24,9 @@ class PMKID extends Module
             case 'getInterfaces':
                 $this->getInterfaces();
                 break;
+            case 'getAPs':
+                $this->getAPs();
+                break;
             case 'startCapture':
                 $this->startCapture();
                 break;
@@ -137,6 +140,11 @@ class PMKID extends Module
       if (file_exists("/pineapple/modules/PMKID/capture/{$this->request->capture}")) {
         exec("cp /pineapple/modules/PMKID/capture/{$this->request->capture}  /tmp/pmkid.log");
       }
+      $apFilename = str_replace(".log", ".aps", $this->request->capture);
+      $this->response = $apFilename;
+      if (file_exists("/pineapple/modules/PMKID/capture/${apFilename}")) {
+        exec("cp /pineapple/modules/PMKID/capture/${apFilename} /tmp/pmkid-aps");
+      }
     }
 
     private function convertCapture()
@@ -164,30 +172,18 @@ class PMKID extends Module
 
                 $output = implode("\n", $filteredOutput);
 
-                // $startNic
-                preg_match_all('/MAC ACCESS POINT[\.]*?: ([a-f0-9]*?) \(start NIC\)/', $output, $startNic);
-                // $accessPoints
-                preg_match_all('/([a-f0-9]*) -> [a-f0-9]*? (.*?)\s\[PROBERESPONSE.*?]/m', $output, $accessPoints);
                 // $pmkids
 								preg_match_all('/([a-f0-9]*) -> [a-f0-9]* \[FOUND PMKID.*?]/m', $output, $pmkids);
 
-                $startNic = count($startNic[0]) > 0 ? $startNic[1][0] : '';
 								$pmkids = count($pmkids[0]) > 0 ? $pmkids[1] : array();
-								$accessPoints = array_reduce(array_keys($accessPoints[0]), function($total, $currentIndex) use ($accessPoints, $pmkids, $startNic)
-								{
-                    if (substr($startNic, 0, -3) == substr($accessPoints[1][$currentIndex], 0, -3)) return $total;
-										$total[$accessPoints[1][$currentIndex]] = ["bssid" => $accessPoints[2][$currentIndex], "powned" => in_array($accessPoints[1][$currentIndex], $pmkids)];
-										return $total;
-								});
-                $this->response = json_encode(array(
-                    "accessPoints" => $accessPoints,
-                    "pmkids" => $pmkids
-                ));
+
+                $this->response = array(
+                  "pmkids" => $pmkids
+                );
             } else {
-                $this->response = json_encode(array(
-                    "accessPoints" => array(),
-                    "pmkids" => array()
-                ));
+                $this->response = array(
+                  "pmkids" => array()
+                );
             }
         } else {
             $this->response = " ";
@@ -203,8 +199,26 @@ class PMKID extends Module
         );
     }
 
+    private function getAPs()
+    {
+        if (!$this->request->skipScan) exec("/pineapple/modules/PMKID/scripts/scan.sh {$this->request->interface} {$this->request->duration}");
+        $result = file_get_contents("/tmp/pmkid-aps");
+        $apList = array_map(function ($line) {
+          $lineExploded = explode(',', $line);
+          return array("bssid"=> $lineExploded[0], "essid" => $lineExploded[1]);
+        }, array_filter(explode("\n", $result)));
+        $this->response = array(
+          "aps" => $apList
+        );
+    }
+
     private function startCapture()
     {
+        if (isset($this->request->selectedAps)) {
+          $fp = fopen("/tmp/pmkid-selectedAps", "w");
+          fwrite($fp, implode("\n", $this->request->selectedAps));
+          fclose($fp);
+        }
         exec("/pineapple/modules/PMKID/scripts/capture.sh start {$this->request->interface} {$this->request->commandLineArguments}");
     }
 
