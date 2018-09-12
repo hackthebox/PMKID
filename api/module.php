@@ -172,7 +172,6 @@ class PMKID extends Module
 
                 $output = implode("\n", $filteredOutput);
 
-
                 // $pmkids
 								preg_match_all('/([a-f0-9]*) -> [a-f0-9]* \[FOUND PMKID.*?]/m', $output, $pmkids);
 

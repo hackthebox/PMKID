@@ -233,7 +233,6 @@ registerController('PMKID_ScanController', ['$api', '$scope', '$rootScope', '$ti
   $scope.output = 'Loading...';
   $scope.pmkids = [];
 
-
   $scope.getInterfaces();
   $scope.getScanStatus();
   $scope.refreshOutput();

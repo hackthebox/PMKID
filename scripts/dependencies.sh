@@ -7,25 +7,20 @@ export PATH=$PATH:/sd/usr/bin:/sd/usr/sbin
 }
 
 touch /tmp/PMKID.progress
-
-HCXDUMPTOOL=https://github.com/adde88/hcxtools-hcxdumptool-openwrt/raw/b23ae47fa5a9c5d137a0627459cbf0f8a5a1ba4b/bin/ar71xx/packages/base/hcxdumptool_4.2.1-8_ar71xx.ipk
-HCXTOOLS=https://github.com/adde88/hcxtools-hcxdumptool-openwrt/raw/cea232511fb6de3b4b71d3b07b8181bb55145a2b/bin/ar71xx/packages/base/hcxtools_4.2.1-9_ar71xx.ipk
+mkdir -p /tmp/PMKID
+wget https://github.com/adde88/hcxtools-hcxdumptool-openwrt/tree/master/bin/ar71xx/packages/base -P /tmp/PMKID
+HCXDUMPTOOL=`grep -F "hcxdumptool_" /tmp/PMKID/base | awk {'print $5'} | awk -F'"' {'print $2'}`
+HCXTOOLS=`grep -F "hcxtools_" /tmp/PMKID/base | awk {'print $5'} | awk -F'"' {'print $2'}`
 
 if [ "$1" = "install" ]; then
   if [ "$2" = "internal" ]; then
-    wget $HCXDUMPTOOL -O /tmp/hcxdumptool.ipk
-    wget $HCXTOOLS -O /tmp/hcxtools.ipk
-    opkg install /tmp/hcxdumptool.ipk
-    opkg install /tmp/hcxtools.ipk
-    rm /tmp/hcxdumptool.ipk
-    rm /tmp/hcxtools.ipk
+    wget https://github.com/adde88/hcxtools-hcxdumptool-openwrt/raw/master/bin/ar71xx/packages/base/"$HCXDUMPTOOL" -P /tmp/PMKID
+    wget https://github.com/adde88/hcxtools-hcxdumptool-openwrt/raw/master/bin/ar71xx/packages/base/"$HCXTOOLS" -P /tmp/PMKID
+    opkg install /tmp/PMKID/*.ipk
   elif [ "$2" = "sd" ]; then
-    wget $HCXDUMPTOOL -O /tmp/hcxdumptool.ipk
-    wget $HCXTOOLS -O /tmp/hcxtools.ipk
-    opkg install /tmp/hcxdumptool.ipk --dest sd
-    opkg install /tmp/hcxtools.ipk --dest sd
-    rm /tmp/hcxdumptool.ipk
-    rm /tmp/hcxtools.ipk
+    wget https://github.com/adde88/hcxtools-hcxdumptool-openwrt/raw/master/bin/ar71xx/packages/base/"$HCXDUMPTOOL" -P /tmp/PMKID
+    wget https://github.com/adde88/hcxtools-hcxdumptool-openwrt/raw/master/bin/ar71xx/packages/base/"$HCXTOOLS" -P /tmp/PMKID
+    opkg install /tmp/PMKID/*.ipk --dest sd
   fi
 
   touch /etc/config/pmkid
@@ -40,3 +35,4 @@ elif [ "$1" = "remove" ]; then
 fi
 
 rm /tmp/PMKID.progress
+rm -rf /tmp/PMKID

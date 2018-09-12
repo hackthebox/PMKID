@@ -1,5 +1,5 @@
 #!/bin/sh
-#2015 - Whistle Master
+#2015 - g0blin & Zylla
 
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/sd/lib:/sd/usr/lib
 export PATH=$PATH:/sd/usr/bin:/sd/usr/sbin
