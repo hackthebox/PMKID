@@ -26,6 +26,10 @@ if [ "$1" = "install" ]; then
   touch /etc/config/pmkid
   echo "config pmkid 'module'" > /etc/config/pmkid
 
+  uci set pmkid.module.commandLineArguments='--enable_status 3'
+  uci commit pmkid.module.commandLineArguments
+  uci set pmkid.module.includeOrExclude='include'
+  uci commit pmkid.module.includeOrExclude
   uci set pmkid.module.installed=1
   uci commit pmkid.module.installed
 

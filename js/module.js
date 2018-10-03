@@ -108,6 +108,25 @@ registerController('PMKID_ScanController', ['$api', '$scope', '$rootScope', '$ti
     $scope.capturing ? $scope.stopCapture() : $scope.startCapture();
   });
 
+  $scope.updateConfig = (function() {
+    $api.request({
+      module: 'PMKID',
+      action: 'updateConfig',
+      commandLineArguments: $scope.commandLineArguments,
+      includeOrExclude: $scope.includeOrExclude
+    })
+  });
+
+  $scope.getConfig = (function() {
+    $api.request({
+      module: 'PMKID',
+      action: 'getConfig'
+    }, function (response) {
+      $scope.commandLineArguments = response.commandLineArguments
+      $scope.includeOrExclude = response.includeOrExclude
+    })
+  })
+
   $scope.startCapture = (function() {
     $scope.captureLabel = "warning";
     $scope.captureText = "Starting...";
@@ -118,6 +137,7 @@ registerController('PMKID_ScanController', ['$api', '$scope', '$rootScope', '$ti
       module: 'PMKID',
       action: 'startCapture',
       interface: $scope.selectedInterface,
+      includeOrExclude: $scope.includeOrExclude,
       commandLineArguments: $scope.commandLineArguments,
       selectedAps
     }, function(response) {
@@ -233,6 +253,7 @@ registerController('PMKID_ScanController', ['$api', '$scope', '$rootScope', '$ti
   $scope.output = 'Loading...';
   $scope.pmkids = [];
 
+  $scope.getConfig();
   $scope.getInterfaces();
   $scope.getScanStatus();
   $scope.refreshOutput();

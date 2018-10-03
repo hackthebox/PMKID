@@ -73,7 +73,7 @@
           </select>
 
           <span class="input-group-addon input-sm">Command Line Arguments</span>
-          <input type="text" class="form-control input-sm" ng-disabled="captureStarting || captureStopping || capturing" ng-model="commandLineArguments"/>
+          <input type="text" class="form-control input-sm" ng-disabled="captureStarting || captureStopping || capturing" ng-model="commandLineArguments" ng-change="updateConfig()"/>
 
           <span class="input-group-btn">
             <button class="btn btn-{{scanLabel}} btn-sm" ng-disabled="scanning || captureStarting || captureStopping || capturing" ng-click="getAPs()">{{ scanText }}</button>
@@ -101,7 +101,12 @@
     <table class="table">
       <thead>
         <tr>
-          <th>Include</th>
+          <th>
+            <select class="form-control" ng-model="includeOrExclude" ng-change="updateConfig()">
+              <option value="include" selected>Include</option>
+              <option value="exclude">Exclude</option>
+            </select>
+          </th>
           <th>MAC</th>
           <th>BSSID</th>
           <th>POWNED</th>

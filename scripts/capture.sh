@@ -10,7 +10,19 @@ LOCK=/tmp/pmkid.lock
 
 MYMONITOR=''
 MYINTERFACE=$2
-COMMANDLINEARGS=${*:3}
+INCLUDEOREXCLUDE=$3
+case "$INCLUDEOREXCLUDE" in
+  include)
+    FILTERMODE=2
+    ;;
+  exclude)
+    FILTERMODE=1
+    ;;
+  *)
+    FILTERMODE=2
+    ;;
+esac
+COMMANDLINEARGS=${*:4}
 
 if [ "$1" = "start" ]; then
 
@@ -56,7 +68,7 @@ if [ "$1" = "start" ]; then
 
   echo $MYTIME > ${LOCK}
 
-  hcxdumptool -o /pineapple/modules/PMKID/capture/capture_${MYTIME} -i ${MYMONITOR} $COMMANDLINEARGS --filtermode=2 --filterlist=/tmp/pmkid-selectedAps &> ${LOG} &
+  hcxdumptool -o /pineapple/modules/PMKID/capture/capture_${MYTIME} -i ${MYMONITOR} $COMMANDLINEARGS --filtermode=$FILTERMODE --filterlist=/tmp/pmkid-selectedAps &> ${LOG} &
 
 elif [ "$1" = "stop" ]; then
   killall -9 hcxdumptool
