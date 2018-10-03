@@ -24,6 +24,12 @@ class PMKID extends Module
             case 'getInterfaces':
                 $this->getInterfaces();
                 break;
+            case 'updateConfig':
+                $this->updateConfig();
+                break;
+            case 'getConfig':
+                $this->getConfig();
+                break;
             case 'getAPs':
                 $this->getAPs();
                 break;
@@ -199,6 +205,22 @@ class PMKID extends Module
         );
     }
 
+    private function updateConfig()
+    {
+      exec("uci set pmkid.module.commandLineArguments='{$this->request->commandLineArguments}'");
+      exec("uci commit pmkid.module.commandLineArguments");
+      exec("uci set pmkid.module.includeOrExclude='{$this->request->includeOrExclude}'");
+      exec("uci commit pmkid.module.includeOrExclude");
+    }
+
+    private function getConfig()
+    {
+      $this->response = array(
+        "commandLineArguments" => $this->uciGet("pmkid.module.commandLineArguments"),
+        "includeOrExclude" => $this->uciGet("pmkid.module.includeOrExclude")
+      );
+    }
+
     private function getAPs()
     {
         if (!$this->request->skipScan) exec("/pineapple/modules/PMKID/scripts/scan.sh {$this->request->interface} {$this->request->duration}");
@@ -219,7 +241,7 @@ class PMKID extends Module
           fwrite($fp, implode("\n", $this->request->selectedAps));
           fclose($fp);
         }
-        exec("/pineapple/modules/PMKID/scripts/capture.sh start {$this->request->interface} {$this->request->commandLineArguments}");
+        exec("/pineapple/modules/PMKID/scripts/capture.sh start {$this->request->interface} {$this->request->includeOrExclude} {$this->request->commandLineArguments}");
     }
 
 		private function stopCapture()
