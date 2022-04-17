@@ -8,18 +8,18 @@ export PATH=$PATH:/sd/usr/bin:/sd/usr/sbin
 
 touch /tmp/PMKID.progress
 mkdir -p /tmp/PMKID
-wget https://github.com/adde88/hcxtools-hcxdumptool-openwrt/tree/master/bin/ar71xx/packages/base -P /tmp/PMKID
-HCXDUMPTOOL=`grep -F "hcxdumptool_" /tmp/PMKID/base | awk {'print $5'} | awk -F'"' {'print $2'}`
-HCXTOOLS=`grep -F "hcxtools_" /tmp/PMKID/base | awk {'print $5'} | awk -F'"' {'print $2'}`
+wget https://github.com/adde88/hcxtools-hcxdumptool-openwrt/tree/openwrt-19.07-mk6/bin/packages/mips_24kc/custom -P /tmp/PMKID
+HCXDUMPTOOL=`grep -F "hcxdumptool-custom_" /tmp/PMKID/custom | awk {'print $8'} | awk -F'"' {'print $2'}`
+HCXTOOLS=`grep -F "hcxtools-custom_" /tmp/PMKID/custom | awk {'print $8'} | awk -F'"' {'print $2'}`
 
 if [ "$1" = "install" ]; then
   if [ "$2" = "internal" ]; then
-    wget https://github.com/adde88/hcxtools-hcxdumptool-openwrt/raw/master/bin/ar71xx/packages/base/"$HCXDUMPTOOL" -P /tmp/PMKID
-    wget https://github.com/adde88/hcxtools-hcxdumptool-openwrt/raw/master/bin/ar71xx/packages/base/"$HCXTOOLS" -P /tmp/PMKID
+    wget https://github.com/adde88/hcxtools-hcxdumptool-openwrt/raw/openwrt-19.07-mk6/bin/packages/mips_24kc/custom/"$HCXDUMPTOOL" -P /tmp/PMKID
+    wget https://github.com/adde88/hcxtools-hcxdumptool-openwrt/raw/openwrt-19.07-mk6/bin/packages/mips_24kc/custom/"$HCXTOOLS" -P /tmp/PMKID
     opkg install /tmp/PMKID/*.ipk
   elif [ "$2" = "sd" ]; then
-    wget https://github.com/adde88/hcxtools-hcxdumptool-openwrt/raw/master/bin/ar71xx/packages/base/"$HCXDUMPTOOL" -P /tmp/PMKID
-    wget https://github.com/adde88/hcxtools-hcxdumptool-openwrt/raw/master/bin/ar71xx/packages/base/"$HCXTOOLS" -P /tmp/PMKID
+    wget https://github.com/adde88/hcxtools-hcxdumptool-openwrt/raw/openwrt-19.07-mk6/bin/packages/mips_24kc/custom/"$HCXDUMPTOOL" -P /tmp/PMKID
+    wget https://github.com/adde88/hcxtools-hcxdumptool-openwrt/raw/openwrt-19.07-mk6/bin/packages/mips_24kc/custom/"$HCXTOOLS" -P /tmp/PMKID
     opkg install /tmp/PMKID/*.ipk --dest sd
   fi
 
