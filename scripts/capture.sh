@@ -68,7 +68,7 @@ if [ "$1" = "start" ]; then
 
   echo $MYTIME > ${LOCK}
 
-  hcxdumptool -o /pineapple/modules/PMKID/capture/capture_${MYTIME} -i ${MYMONITOR} $COMMANDLINEARGS --filtermode=$FILTERMODE --filterlist=/tmp/pmkid-selectedAps &> ${LOG} &
+  hcxdumptool -o /pineapple/modules/PMKID/capture/capture_${MYTIME} -i ${MYMONITOR} $COMMANDLINEARGS --filtermode=$FILTERMODE --filterlist_ap=/tmp/pmkid-selectedAps &> ${LOG} &
 
 elif [ "$1" = "stop" ]; then
   killall -9 hcxdumptool
